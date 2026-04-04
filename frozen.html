@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Detail | Moje Musee</title>
+    <link rel="icon" href="logos/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #fdfcf9;
+            --sidebar-color: #ffffff;
+            --text-main: #4a4a4a;
+            --text-sub: #8e8e8e; 
+            --accent: #a69076;
+            --footer-line: #eeeeee;
+            --card-bg: #ffffff;
+        }
+
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0; padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        .container { display: flex; min-height: 100vh; }
+
+        /* --- 사이드바 --- */
+        nav {
+            width: 300px; background-color: var(--sidebar-color);
+            padding: 40px 30px; display: flex; flex-direction: column;
+            border-right: 1px solid var(--footer-line);
+            position: fixed; top: 0; left: 0; bottom: 0; height: 100vh;
+            z-index: 100; overflow-y: auto; scrollbar-width: thin;
+        }
+        nav::-webkit-scrollbar { width: 4px; }
+        nav::-webkit-scrollbar-thumb { background: var(--footer-line); border-radius: 10px; }
+
+        .logo-area { margin-bottom: 50px; width: 100%; }
+        .logo-area a { text-decoration: none; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+        .logo-text { font-weight: 700; font-size: 1.2rem; color: var(--text-main); }
+        .logo-image { width: 120px; height: 120px; object-fit: cover; border-radius: 8px; }
+
+        .menu-group { margin-bottom: 25px; }
+        .menu-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; cursor: pointer; }
+        .menu-group ul { list-style: none; padding: 0; margin: 0; }
+        .menu-group li { margin-bottom: 8px; }
+        .menu-group a { text-decoration: none; color: var(--text-sub); font-size: 0.85rem; transition: 0.3s; }
+        .menu-group a:hover { color: var(--accent); }
+        .collapsible-menu { display: none; margin-top: 10px; padding-left: 10px; }
+        .collapsible-menu.active { display: block; }
+
+        /* --- [수정됨] 메인 콘텐츠 영역 중앙 정렬 --- */
+        main {
+            margin-left: 300px; /* 사이드바 공간 확보 */
+            padding: 80px 50px;
+            flex: 1; /* 남은 공간 모두 차지 */
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; /* 내부 요소들을 가로 중앙으로 정렬 */
+            min-height: 100vh;
+        }
+
+        .project-grid {
+            width: 100%;
+            max-width: 1230px; /* (600px * 2) + gap 30px */
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 30px;
+            margin-bottom: 60px;
+            align-items: start;
+        }
+
+        .gallery-item {
+            width: 100%;
+            max-width: 600px; 
+            aspect-ratio: 4 / 2.5;
+            overflow: hidden;
+            border-radius: 8px;
+            background-color: #f0f0f0;
+            margin: 0 auto;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s;
+        }
+        .gallery-item:hover img { transform: scale(1.02); }
+
+        .project-info-card {
+            width: 100%;
+            max-width: 600px; 
+            background-color: var(--card-bg);
+            border: 1px solid var(--footer-line);
+            padding: 40px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+        }
+
+        .card-header {
+            border-bottom: 1px solid var(--text-main);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .card-project-name { font-size: 1.3rem; font-weight: 700; display: block; margin-bottom: 8px; }
+        .card-date { color: var(--accent); font-weight: 700; font-size: 0.9rem; text-transform: uppercase; }
+
+        .info-grid { display: grid; grid-template-columns: 120px 1fr; gap: 20px 10px; }
+        .info-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-sub); }
+        .info-value { font-size: 0.95rem; line-height: 1.6; font-weight: 400; }
+
+        .back-button-container {
+            width: 100%;
+            max-width: 1230px;
+            display: flex;
+            justify-content: center; /* 뒤로가기 버튼도 중앙 정렬 */
+            margin-bottom: 80px;
+        }
+        .back-button {
+            display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+            color: var(--text-sub); font-size: 0.9rem; transition: color 0.3s;
+        }
+        .back-button:hover { color: var(--accent); }
+
+        /* --- [수정됨] Footer 중앙 정렬 --- */
+        footer { 
+            width: 100%;
+            margin-top: auto; 
+            padding: 60px 0 40px 0; 
+            border-top: 1px solid var(--footer-line); 
+            text-align: center; 
+            color: var(--text-sub); 
+            font-size: 0.85rem;
+            box-sizing: border-box;
+        }
+
+        .mobile-only-menu { display: none !important; }
+
+        /* --- 데스크톱 반응형 --- */
+        @media (max-width: 1200px) {
+            .project-grid {
+                grid-template-columns: 1fr; 
+                max-width: 600px;
+                gap: 40px;
+            }
+        }
+
+        /* --- 모바일 반응형 --- */
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            nav { 
+                position: relative; width: 100%; height: auto; 
+                padding: 30px 20px; border-right: none; 
+                align-items: center; border-bottom: 1px solid var(--footer-line); 
+            }
+            .logo-area, .logo-area a { align-items: center; text-align: center; }
+            .nav-menu-wrapper { display: none; }
+            
+            main { 
+                margin-left: 0; width: 100%; padding: 40px 20px; 
+            }
+            .project-grid { 
+                grid-template-columns: 1fr !important; 
+                max-width: 500px; 
+            }
+            .mobile-only-menu { 
+                display: block !important; padding: 40px 20px; 
+                text-align: center; width: 100%; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <nav>
+        <div class="logo-area"> 
+            <a href="index.html">
+                <span class="logo-text">Moje Musée</span>
+                <img src="logos/logo.png" alt="Logo" class="logo-image">
+            </a>
+        </div>
+        <div class="nav-menu-wrapper">
+            <div class="menu-group">
+                <div class="menu-title">Info</div>
+                <ul>
+                    <li><a href="bio.html">Biography</a></li>
+                    <li><a href="contacts.html">Contacts</a></li>
+                </ul>
+            </div>
+            <div class="menu-group">
+                <div class="menu-title">Projects</div>
+                <ul>
+                    <li><a href="cyber.html" style="color: var(--accent); font-weight:400;">Cyberforum (1994)</a></li>
+                    <li><a href="variation.html" style="color: var(--accent); font-weight:400;">Variation of Chess Match (1970s)</a></li>
+                    <li><a href="108.html" style="color: var(--accent); font-weight:400;">108 pound rosa damascene (2015)</a></li>
+                    <li><a href="natural.html" style="color: var(--accent); font-weight:400;">natural relations (1989)</a></li>
+                    <li><a href="frozen.html" style="color: var(--accent); font-weight:400;">Frozen Dreams (1968)</a></li>
+                    <li><a href="media.html" style="color: var(--accent); font-weight:400;">Media Installation (2025)</a></li>
+                </ul>
+            </div>
+            <div class="menu-group">
+                <div class="menu-title toggle-trigger">Workshops and Tools <span>+</span></div>
+                <ul class="collapsible-menu">
+            	    <li><a href="cleaning.html">Cleaning</a></li>
+                    <li><a href="adhesive.html">Adhesive</a></li>
+                    <li><a href="consol.html">Consolidation</a></li>
+		    <li><a href="filling.html">Filling</a></li>
+    		    <li><a href="airbrush.html">Air brush</a></li>
+                    <li><a href="matte.html">Matte Paint</a></li>
+ 		    <li><a href="colormatch.html">Colour Matching</a></li>
+                    <li><a href="vacuum.html">Vacuum Forming</a></li>
+                    <li><a href="wood.html">Engineerd Wood</a></li>        
+                    <li><a href="guild.html">Guilded Surface</a></li>
+                    <li><a href="hydrogel.html">Hydrogels</a></li>
+                    <li><a href="poultice.html">Poultice</a></li>
+                    <li><a href="retouchingvideo.html">Retouching Moving Image</a></li>
+  		    <li><a href="neontube.html">Neon Tube & Light Art</a></li>
+                    <li><a href="ras.html">Raspberry Pi & Arduino</a></li>
+                    <li><a href="3dmodeling.html">3D Scanning & Modeling</a></li>
+                    <li><a href="3dprinting.html">3D Printing</a></li>                  
+                    <li><a href="plasticid.html">Plastic Identification</a></li>                        
+          	    <li><a href="textile.html">Textile Loss Compensation</a></li>
+                    <li><a href="artificialage.html">Artificial Aging</a></li>        
+                </ul>
+            </div>
+            <div class="menu-group">
+                <div class="menu-title toggle-trigger">Publications <span>+</span></div>
+                <ul class="collapsible-menu">
+                    <li><a href="0_thesis.html">Published</a></li>
+                    <li><a href="0_manus.html">Manuscript</a></li>
+                    <li><a href="0_poster.html">Poster</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <main>
+        <section class="project-grid">
+            <div class="gallery-item"><img src="projects/frozen/frozen01.jpg" alt="#"></div>
+            <div class="gallery-item"><img src="projects/frozen/frozen05.jpg" alt="#"></div>
+            <div class="gallery-item"><img src="projects/frozen/frozen02.jpg" alt="#"></div>
+            <div class="gallery-item"><img src="projects/frozen/frozen03.jpg" alt="#"></div>
+      	    <div class="gallery-item"><img src="projects/frozen/frozen06.jpg" alt="#"></div>
+            <div class="gallery-item"><img src="projects/frozen/frozen07.jpg" alt="#"></div>
+      	    <div class="gallery-item"><img src="projects/frozen/frozen04.jpg" alt="#"></div>
+
+
+            <article class="project-info-card">
+                <div class="card-header">
+                    <span class="card-project-name">Frozen Dreams (1968)</span>
+                    <span class="card-date">Treatment_Amersfroot, Netherlands, 2025</span>
+                </div>
+                <div class="info-grid">
+                    <div class="info-label">Artist</div>
+                    <div class="info-value">Woody van Amen</div>
+                    <div class="info-label">Materials</div>
+                    <div class="info-value">Metal, Light tubes, PMMA, Electrical parts from refridgerator</div>
+                    <div class="info-label">Tools</div>
+                    <div class="info-value">PMMA, Acrifix 0116, Acrifix 0190</div>
+                    <div class="info-label">Method</div>
+                    <div class="info-value">PMMA Adhesion, Clamping</div>
+                    <div class="info-label">Collab.</div>
+                    <div class="info-value">Convervator Katja van de Braak<br>Cultural Heritage Agency of the Netherlands</div>
+                    <div class="info-label">Remark</div>
+                    <div class="info-value">Out of respect for the stakeholders' request,<br>
+                    I am posting limited parts of photos for this project.<br></div>
+
+
+                </div>
+            </article>
+        </section>
+
+        <div class="back-button-container">
+            <a href="index.html" class="back-button">← Back</a>
+        </div>
+
+              <div class="mobile-only-menu">
+           
+            <div class="menu-group">
+                <div class="menu-title">Projects</div>
+                  <ul>
+                  <li><a href="cyber.html">Cyberforum (1994)</a></li>
+                   <li><a href="variation.html">Variation of Chess Match (1970s)</a></li>
+                    <li><a href="108.html">108 pound rosa damascene (2015)</a></li>
+                    <li><a href="natural.html">natural relations (1989)</a></li>
+                 <li><a href="frozen.html">Frozen Dreams (1968)</a></li>
+  		 <li><a href="media.html">Media Installaion</a></li>
+                </ul>
+            </div>
+            <div class="menu-group">
+                <div class="menu-title">Workshops</div>
+                <ul>
+            	    <li><a href="cleaning.html">Cleaning</a></li>
+                    <li><a href="adhesive.html">Adhesive</a></li>
+                    <li><a href="consol.html">Consolidation</a></li>
+		    <li><a href="filling.html">Filling</a></li>
+    		    <li><a href="airbrush.html">Air brush</a></li>
+                    <li><a href="matte.html">Matte Paint</a></li>
+ 		    <li><a href="colormatch.html">Colour Matching</a></li>
+                    <li><a href="vacuum.html">Vacuum Forming</a></li>
+                    <li><a href="wood.html">Engineerd Wood</a></li>        
+                    <li><a href="guild.html">Guilded Surface</a></li>
+                    <li><a href="hydrogel.html">Hydrogels</a></li>
+                    <li><a href="poultice.html">Poultice</a></li>
+                    <li><a href="retouchingvideo.html">Retouching Moving Image</a></li>
+  		    <li><a href="neontube.html">Neon Tube & Light Art</a></li>
+                    <li><a href="ras.html">Raspberry Pi & Arduino</a></li>
+                    <li><a href="3dmodeling.html">3D Scanning & Modeling</a></li>
+                    <li><a href="3dprinting.html">3D Printing</a></li>                  
+                    <li><a href="plasticid.html">Plastic Identification</a></li>                        
+          	    <li><a href="textile.html">Textile Loss Compensation</a></li>
+                    <li><a href="artificialage.html">Artificial Aging</a></li>       
+		</ul>
+            </div>
+            <div class="menu-group">
+                <div class="menu-title">Publications</div>
+                <ul>
+                    <li><a href="0_thesis.html">Published</a></li>
+                    <li><a href="0_manus.html">Manuscript</a></li>
+                    <li><a href="0_poster.html">Poster</a></li>
+		</ul>
+            </div>
+
+ 	<div class="menu-group">
+                <div class="menu-title">Info</div>
+                <ul><li><a href="bio.html">Biography</a></li><li><a href="contacts.html">Contacts</a></li></ul>
+            </div>
+
+        </div>
+
+        <footer>
+            <div class="footer-info">mojemusee@gmail.com</div>
+            <div class="copyright">© 2025 MOJE MUSEE. All rights reserved.</div>
+        </footer>
+    </main>
+</div>
+
+<script>
+    document.querySelectorAll('.toggle-trigger').forEach(trigger => {
+        trigger.addEventListener('click', function() {
+            const menu = this.nextElementSibling;
+            const icon = this.querySelector('span');
+            if(menu) {
+                menu.classList.toggle('active');
+                if(icon) icon.textContent = menu.classList.contains('active') ? '-' : '+';
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

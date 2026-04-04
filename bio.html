@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biography | Moje Musee</title>
+    <link rel="icon" href="logos/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #fdfcf9;
+            --sidebar-color: #ffffff;
+            --text-main: #4a4a4a;
+            --text-sub: #8e8e8e; 
+            --accent: #a69076;
+            --footer-line: #eeeeee;
+        }
+
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0; padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        .container { display: flex; min-height: 100vh; }
+
+        /* --- 사이드바 (index.html과 동일) --- */
+        nav {
+            width: 300px; background-color: var(--sidebar-color);
+            padding: 40px 30px; display: flex; flex-direction: column;
+            border-right: 1px solid var(--footer-line);
+            position: fixed; top: 0; left: 0; bottom: 0; height: 100vh;
+            z-index: 100; overflow-y: auto; scrollbar-width: thin;
+        }
+        nav::-webkit-scrollbar { width: 4px; }
+        nav::-webkit-scrollbar-thumb { background: var(--footer-line); border-radius: 10px; }
+
+        .logo-area { margin-bottom: 50px; width: 100%; }
+        .logo-area a { text-decoration: none; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+        .logo-text { font-weight: 700; font-size: 1.2rem; color: var(--text-main); }
+        .logo-image { width: 120px; height: 120px; object-fit: cover; border-radius: 8px; }
+
+        .menu-group { margin-bottom: 25px; }
+        .menu-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; cursor: pointer; }
+        .menu-group ul { list-style: none; padding: 0; margin: 0; }
+        .menu-group li { margin-bottom: 8px; }
+        .menu-group a { text-decoration: none; color: var(--text-sub); font-size: 0.85rem; transition: 0.3s; }
+        .menu-group a:hover { color: var(--accent); }
+        .collapsible-menu { display: none; margin-top: 10px; padding-left: 10px; }
+        .collapsible-menu.active { display: block; }
+
+        /* --- 메인 콘텐츠 (Bio 전용) --- */
+        main {
+            margin-left: 300px; padding: 80px 60px;
+            width: calc(100% - 300px);
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+
+        .bio-container { max-width: 900px; width: 100%; }
+        
+        /* 프로필 상단 레이아웃 */
+        .bio-header { display: flex; gap: 50px; align-items: flex-start; margin-bottom: 80px; }
+        .profile-image { width: 300px; flex-shrink: 0; border-radius: 8px; overflow: hidden; padding-top: 8%; }
+        .profile-image img { width: 100%;  display: block; filter: grayscale(20%);border-radius: 8px; }
+
+        .bio-intro { flex: 1; }
+        .name-kr { font-size: 2.2rem; font-weight: 700; display: block; margin-bottom: 5px; }
+        .name-en { font-size: 1.4rem; font-weight: 300; color: var(--text-sub); display: block; margin-bottom: 30px; letter-spacing: 1px; }
+        .bio-text { line-height: 1.8; color: var(--text-main); font-size: 1rem; font-weight: 300; }
+
+        /* 약력 섹션 */
+        .bio-section { margin-bottom: 60px; }
+        .section-title { 
+            font-size: 1rem; font-weight: 700; text-transform: uppercase; 
+            border-bottom: 1px solid var(--text-main); padding-bottom: 10px; margin-bottom: 30px; 
+            display: inline-block; min-width: 150px;
+        }
+        
+        .history-list { list-style: none; padding: 0; margin: 0; }
+        .history-item { display: flex; margin-bottom: 20px; line-height: 1.6; }
+        .year { width: 120px; flex-shrink: 0; font-weight: 700; color: var(--accent); }
+        .description { flex: 1; font-weight: 300; font-size: 0.95rem; margin-left: 10px}
+
+
+        /* --- [수정됨] Footer 중앙 정렬 --- */
+        footer { 
+            width: 100%;
+            margin-top: auto; 
+            padding: 60px 0 40px 0; 
+            border-top: 1px solid var(--footer-line); 
+            text-align: center; 
+            color: var(--text-sub); 
+            font-size: 0.85rem;
+            box-sizing: border-box;
+        }
+
+
+
+
+/* 뒤로가기 버튼 스타일 */
+        .back-button-container {
+            width: 100%;
+            max-width: 1230px;
+            display: flex;
+            justify-content: center; 
+            margin-bottom: 80px;
+        }
+        .back-button {
+            display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+            color: var(--text-sub); font-size: 0.9rem; transition: color 0.3s;
+        }
+        .back-button:hover { color: var(--accent); }
+
+
+
+        /* 📱 모바일 반응형 조정 */
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            nav { 
+                position: relative; width: 100%; height: auto; padding: 30px 20px; 
+                border-right: none; border-bottom: 1px solid var(--footer-line); align-items: center; 
+            }
+            .logo-area a { align-items: center; text-align: center; }
+            .nav-menu-wrapper { display: none; }
+            
+            main { margin-left: 0; width: 100%; padding: 40px 25px; }
+            .bio-header { flex-direction: column; align-items: center; gap: 30px; text-align: center; }
+            .profile-image { width: 200px; }
+            .history-item { flex-direction: column; margin-bottom: 25px; }
+            .year { margin-bottom: 5px; }
+
+            /* 모바일 아코디언 중앙 정렬 */
+            .mobile-only-menu { display: block !important; padding: 40px 0; text-align: center; }
+            .mobile-only-menu .menu-group { margin-bottom: 30px; }
+            .mobile-only-menu ul { padding: 0; list-style: none; }
+            .mobile-only-menu .collapsible-menu { display: none; padding-top: 10px; }
+            .mobile-only-menu .collapsible-menu.active { display: block; }
+            .mobile-only-menu .toggle-trigger { display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; }
+        }
+
+        @media (min-width: 769px) { .mobile-only-menu { display: none !important; } }
+
+/* 모바일에서는 버튼을 좀 더 크게 하거나 중앙 정렬할 수 있습니다 */
+@media (max-width: 768px) {
+    .back-button {
+        margin-bottom: 30px;
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <nav>
+        <div class="logo-area"> 
+            <a href="index.html">
+                <span class="logo-text">Moje Musée</span>
+                <img src="logos/logo.png" alt="Logo" class="logo-image">
+            </a>
+        </div>
+        <div class="nav-menu-wrapper">
+            <div class="menu-group">
+                <div class="menu-title">Info</div>
+                <ul>
+                    <li><a href="bio.html" style="color: var(--accent); font-weight:700;">Biography</a></li>
+                    <li><a href="contacts.html">Contacts</a></li>
+                </ul>
+            </div>
+            <div class="menu-group">
+                <div class="menu-title">Projects</div>
+                <ul>
+                   <li><a href="cyber.html" style="color: var(--accent); font-weight:400;">Cyberforum (1994)</a></li>
+                   <li><a href="variation.html" style="color: var(--accent); font-weight:400;">Variation of Chess Match (1970s)</a></li>
+                    <li><a href="108.html" style="color: var(--accent); font-weight:400;">108 pound rosa damascene (2015)</a></li>
+                    <li><a href="natural.html" style="color: var(--accent); font-weight:400;">natural relations (1989)</a></li>
+                  <li><a href="frozen.html" style="color: var(--accent); font-weight:400;">Frozen Dreams (1968)</a></li>
+  	  	 <li><a href="media.html" style="color: var(--accent); font-weight:400;">Media Installaion (2025)</a></li>
+
+                </ul>
+            </div>
+            <div class="menu-group">
+                <div class="menu-title toggle-trigger">Workshops and Tools <span>+</span></div>
+                <ul class="collapsible-menu">
+               	    <li><a href="cleaning.html">Cleaning</a></li>
+                    <li><a href="adhesive.html">Adhesive</a></li>
+                    <li><a href="consol.html">Consolidation</a></li>
+		    <li><a href="filling.html">Filling</a></li>
+    		    <li><a href="airbrush.html">Air brush</a></li>
+                    <li><a href="matte.html">Matte Paint</a></li>
+ 		    <li><a href="colormatch.html">Colour Matching</a></li>
+                    <li><a href="vacuum.html">Vacuum Forming</a></li>
+                    <li><a href="wood.html">Engineerd Wood</a></li>        
+                    <li><a href="guild.html">Guilded Surface</a></li>
+                    <li><a href="hydrogel.html">Hydrogels</a></li>
+                    <li><a href="poultice.html">Poultice</a></li>
+                    <li><a href="retouchingvideo.html">Retouching Moving Image</a></li>
+  		    <li><a href="neontube.html">Neon Tube & Light Art</a></li>
+                    <li><a href="ras.html">Raspberry Pi & Arduino</a></li>
+                    <li><a href="3dmodeling.html">3D Scanning & Modeling</a></li>
+                    <li><a href="3dprinting.html">3D Printing</a></li>                  
+                    <li><a href="plasticid.html">Plastic Identification</a></li>                        
+          	    <li><a href="textile.html">Textile Loss Compensation</a></li>
+                    <li><a href="artificialage.html">Artificial Aging</a></li>         
+                </ul>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-title toggle-trigger">Publications <span>+</span></div>
+                <ul class="collapsible-menu">
+                    <li><a href="0_thesis.html">Published</a></li>
+                    <li><a href="0_manus.html">Manuscript</a></li>
+                    <li><a href="0_poster.html">Poster</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+
+    <main>
+
+        <div class="bio-container">
+            <section class="bio-header">
+                <div class="profile-image">
+                    <img src="logos/profile.png" alt="Moje Ryoo 류희인"> </div>
+                <div class="bio-intro">
+                    <span class="name-kr">Moje Ryoo 류 희 인 </span>
+                    <span class="name-en">Contemporary Art Conservator</span>
+                    <p class="bio-text">
+                        네덜란드와 한국을 기반으로 활동하는 현대미술 보존가입니다. <br>
+                        오브젝트 복원에서부터 뉴미디어 아트, 설치 미술의 수복 및 보존에 이르기까지 <br>
+                        유형의 가치와 무형의 의도를 잇는 작업을 수행합니다. <br><br>
+                        시간에 의해 변형되는 예술의 물리적 성질을 탐구하며, 
+                        작가의 예술적 언어가 <br>미래 세대에게 온전히 전달될 수 있도록 과학적 분석과 인문학적 해석을 병행합니다.<br><br>
+                    </p>
+		<p class="bio-text">
+
+		A contemporary art conservator based in the Netherlands and South Korea. <br>
+		I bridge the gap between tangible materiality and intangible intent, 
+		ranging from individual object restoration to the preservation of time based media and installation art.<br><br>
+		By investigating the physical transformation of art over time,
+		scientific analysis is integrated with humanistic interpretation to ensure an artist’s creative language is faithfully transmitted to future generations.
+ 		</p>
+                </div>
+            </section>
+
+            <section class="bio-section">
+                <h3 class="section-title">Professional Experience</h3>
+                <div class="history-list">
+                    <div class="history-item">
+                        <span class="year">2025 - Present</span>
+                        <span class="description">Internship/ Freelance Conservator, Netherlands </span>
+                    </div>
+                    <div class="history-item">
+                        <span class="year">2025</span>
+                        <span class="description">Installation Exhibition of herman de vries at Rijksmuseum Twenthe</span>
+                    </div>
+                    <div class="history-item">
+                        <span class="year">2021</span>
+                        <span class="description">Conservation Treatment at Nam Jun Paik Art Center / Ken Kim Conaservation</span>
+                    </div>
+                    <div class="history-item">
+                        <span class="year">2008-2023</span>
+                        <span class="description">Supply Chain Management in the Various Coporates based in Korea, China and Europe</span>
+                    </div>
+                
+                </div>
+            </section>
+
+            <section class="bio-section">
+                <h3 class="section-title">Education</h3>
+                <div class="history-list">
+                    <div class="history-item">
+                        <span class="year">2023-2025</span>
+                        <span class="description">Master of Science in Conservation and Restoration of Cultural Heritage at University of Amsterdam</span>
+                    </div>
+                    <div class="history-item">
+                        <span class="year">2017-2018</span>
+                        <span class="description">Painting at Wimbledon College of Arts (University of the Arts London)</span>
+                    </div>
+  		    <div class="history-item">
+                        <span class="year">2003-2008</span>
+                        <span class="description">Bachelor in Chinese Language and Literature at SungKyunKwan University</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+      <div class="back-button-container">
+            <a href="index.html" class="back-button">← Back</a>
+        </div>
+
+
+<div class="mobile-only-menu">
+           
+            <div class="menu-group">
+                <div class="menu-title">Projects</div>
+                  <ul>
+                  <li><a href="cyber.html">Cyberforum (1994)</a></li>
+                   <li><a href="variation.html">Variation of Chess Match (1970s)</a></li>
+                    <li><a href="108.html">108 pound rosa damascene (2015)</a></li>
+                    <li><a href="natural.html">natural relations (1989)</a></li>
+                 <li><a href="frozen.html">Frozen Dreams (1968)</a></li>
+  		 <li><a href="media.html">Media Installaion</a></li>
+                </ul>
+            </div>
+            <div class="menu-group">
+                <div class="menu-title">Workshops</div>
+                <ul>
+            	    <li><a href="cleaning.html">Cleaning</a></li>
+                    <li><a href="adhesive.html">Adhesive</a></li>
+                    <li><a href="consol.html">Consolidation</a></li>
+		    <li><a href="filling.html">Filling</a></li>
+    		    <li><a href="airbrush.html">Air brush</a></li>
+                    <li><a href="matte.html">Matte Paint</a></li>
+ 		    <li><a href="colormatch.html">Colour Matching</a></li>
+                    <li><a href="vacuum.html">Vacuum Forming</a></li>
+                    <li><a href="wood.html">Engineerd Wood</a></li>        
+                    <li><a href="guild.html">Guilded Surface</a></li>
+                    <li><a href="hydrogel.html">Hydrogels</a></li>
+                   <li><a href="poultice.html">Poultice</a></li>
+                    <li><a href="retouchingvideo.html">Retouching Moving Image</a></li>
+  		    <li><a href="neontube.html">Neon Tube & Light Art</a></li>
+                    <li><a href="ras.html">Raspberry Pi & Arduino</a></li>
+                    <li><a href="3dmodeling.html">3D Scanning & Modeling</a></li>
+                    <li><a href="3dprinting.html">3D Printing</a></li>                  
+                    <li><a href="plasticid.html">Plastic Identification</a></li>                        
+          	    <li><a href="textile.html">Textile Loss Compensation</a></li>
+                    <li><a href="artificialage.html">Artificial Aging</a></li>           
+		</ul>
+            </div>
+            <div class="menu-group">
+                <div class="menu-title">Publications</div>
+                <ul>
+                    <li><a href="0_thesis.html">Published</a></li>
+                    <li><a href="0_manus.html">Manuscript</a></li>
+                    <li><a href="0_poster.html">Poster</a></li>
+		</ul>
+            </div>
+
+ 	<div class="menu-group">
+                <div class="menu-title">Info</div>
+                <ul><li><a href="bio.html">Biography</a></li><li><a href="contacts.html">Contacts</a></li></ul>
+            </div>
+
+        </div>
+
+
+        <footer>
+            <div class="footer-info">mojemusee@gmail.com</div>
+            <div class="copyright">© 2025 MOJE MUSEE. All rights reserved.</div>
+        </footer>
+    </main>
+</div>
+
+<script>
+    // 아코디언 토글 스크립트 (index.html과 동일)
+    document.querySelectorAll('.toggle-trigger').forEach(trigger => {
+        trigger.addEventListener('click', function() {
+            const menu = this.nextElementSibling;
+            const icon = this.querySelector('span');
+            if(menu) {
+                menu.classList.toggle('active');
+                if(icon) icon.textContent = menu.classList.contains('active') ? '-' : '+';
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
