@@ -116,42 +116,81 @@
         .back-button:hover { color: var(--accent); }
 
 
-
-        /* 📱 모바일 반응형 조정 */
-        @media (max-width: 768px) {
+/* 📱 모바일 및 태블릿 반응형 통합 조정 (1024px 기준) */
+        @media (max-width: 1024px) {
             .container { flex-direction: column; }
-            nav { 
-                position: relative; width: 100%; height: auto; padding: 30px 20px; 
-                border-right: none; border-bottom: 1px solid var(--footer-line); align-items: center; 
-            }
-            .logo-area a { align-items: center; text-align: center; }
-            .nav-menu-wrapper { display: none; }
             
-            main { margin-left: 0; width: 100%; padding: 40px 25px; }
-            .bio-header { flex-direction: column; align-items: center; gap: 30px; text-align: center; }
-            .profile-image { width: 200px; }
-            .history-item { flex-direction: column; margin-bottom: 25px; }
-            .year { margin-bottom: 5px; }
+            /* 사이드바를 상단 바 형태로 전환 */
+            nav { 
+                position: relative; 
+                width: 100%; 
+                height: auto; 
+                padding: 30px 20px; 
+                border-right: none; 
+                border-bottom: 1px solid var(--footer-line); 
+                align-items: center; 
+            }
+            .logo-area { margin-bottom: 20px; }
+            .logo-area a { align-items: center; text-align: center; }
+            .nav-menu-wrapper { display: none; } /* PC용 메뉴 숨김 */
+            
+            /* 메인 콘텐츠 영역 확장 */
+            main { 
+                margin-left: 0; 
+                width: 100%; 
+                padding: 40px 20px; 
+            }
+            
+            .bio-container { max-width: 100%; }
 
-            /* 모바일 아코디언 중앙 정렬 */
-            .mobile-only-menu { display: block !important; padding: 40px 0; text-align: center; }
+            /* 프로필 상단: 태블릿/모바일에서는 세로 배치 */
+            .bio-header { 
+                flex-direction: column; 
+                align-items: center; 
+                gap: 30px; 
+                text-align: center; 
+                margin-bottom: 50px;
+            }
+            .profile-image { 
+                width: 240px; /* 태블릿에 적당한 크기 */
+                padding-top: 0; 
+            }
+            .bio-intro { width: 100%; }
+            .name-kr { font-size: 1.8rem; }
+            .name-en { font-size: 1.1rem; margin-bottom: 20px; }
+            .bio-text { font-size: 0.95rem; text-align: center; }
+
+            /* 약력 섹션 조정 */
+            .section-title { 
+                display: block; 
+                margin: 0 auto 30px auto; 
+                text-align: center;
+            }
+            .history-item { 
+                flex-direction: column; 
+                align-items: center; 
+                text-align: center; 
+                margin-bottom: 30px; 
+                gap: 5px;
+            }
+            .year { width: 100%; margin-bottom: 5px; }
+            .description { margin-left: 0; }
+
+            /* 하단 뒤로가기 버튼 */
+            .back-button { justify-content: center; width: 100%; margin-bottom: 30px; }
+
+            /* 모바일/태블릿 전용 메뉴 표시 */
+            .mobile-only-menu { display: block !important; padding: 20px 0; text-align: center; }
             .mobile-only-menu .menu-group { margin-bottom: 30px; }
             .mobile-only-menu ul { padding: 0; list-style: none; }
-            .mobile-only-menu .collapsible-menu { display: none; padding-top: 10px; }
-            .mobile-only-menu .collapsible-menu.active { display: block; }
             .mobile-only-menu .toggle-trigger { display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; }
+            .mobile-only-menu .collapsible-menu.active { display: block; }
         }
 
-        @media (min-width: 769px) { .mobile-only-menu { display: none !important; } }
-
-/* 모바일에서는 버튼을 좀 더 크게 하거나 중앙 정렬할 수 있습니다 */
-@media (max-width: 768px) {
-    .back-button {
-        margin-bottom: 30px;
-        justify-content: center;
-        width: 100%;
-    }
-}
+        /* PC 레이아웃 유지 시점 */
+        @media (min-width: 1025px) { 
+            .mobile-only-menu { display: none !important; } 
+        }
 
 
     </style>
@@ -199,7 +238,7 @@
                     <li><a href="vacuum.html">Vacuum Forming</a></li>
                     <li><a href="wood.html">Engineerd Wood</a></li>        
                     <li><a href="guild.html">Guilded Surface</a></li>
-                    <li><a href="hydrogel.html">Hydrogels</a></li>
+                    <li><a href="hydrogel.html">Hydrogel</a></li>
                     <li><a href="poultice.html">Poultice</a></li>
                     <li><a href="retouchingvideo.html">Retouching Moving Image</a></li>
   		    <li><a href="neontube.html">Neon Tube & Light Art</a></li>
@@ -308,7 +347,7 @@
                     <li><a href="108.html">108 pound rosa damascene (2015)</a></li>
                     <li><a href="natural.html">natural relations (1989)</a></li>
                  <li><a href="frozen.html">Frozen Dreams (1968)</a></li>
-  		 <li><a href="media.html">Media Installaion</a></li>
+  		 <li><a href="media.html">Media Installaion (2025)</a></li>
                 </ul>
             </div>
             <div class="menu-group">
@@ -324,7 +363,7 @@
                     <li><a href="vacuum.html">Vacuum Forming</a></li>
                     <li><a href="wood.html">Engineerd Wood</a></li>        
                     <li><a href="guild.html">Guilded Surface</a></li>
-                    <li><a href="hydrogel.html">Hydrogels</a></li>
+                    <li><a href="hydrogel.html">Hydrogel</a></li>
                    <li><a href="poultice.html">Poultice</a></li>
                     <li><a href="retouchingvideo.html">Retouching Moving Image</a></li>
   		    <li><a href="neontube.html">Neon Tube & Light Art</a></li>
