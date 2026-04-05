@@ -263,10 +263,13 @@
                 max-width: 320px; /* 태블릿에서는 조금 더 크게 */
             }
 
+            /* 모바일/태블릿 전용 메뉴 표시 */
             .mobile-only-menu { display: block !important; padding: 20px 0; text-align: center; }
             .mobile-only-menu .menu-group { margin-bottom: 30px; }
             .mobile-only-menu ul { padding: 0; list-style: none; }
             .mobile-only-menu .toggle-trigger { display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; }
+            .mobile-only-menu .collapsible-menu.active { display: block; }
+			
         }
 
         /* PC 모드 시작 시점 조정 */
